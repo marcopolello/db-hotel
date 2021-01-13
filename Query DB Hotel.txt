@@ -1,0 +1,72 @@
+    • Seleziona tutti gli ospiti che sono stati identificati con la carta di identità
+      SELECT document_type, name, surname
+      FROM ospiti
+      WHERE document_type  LIKE  'CI'
+
+    • Seleziona tutti gli ospiti che sono nati dopo il 1988
+	SELECT *
+	FROM ospiti
+	WHERE year(date_of_birth) > 1988
+
+    • Seleziona tutti gli ospiti che hanno più di 20 anni (al momento dell’esecuzione della query)
+      SELECT *
+      FROM ospiti
+      WHERE(year( NOW()- year(date_of_birth) ))> 20 
+	
+    • Seleziona tutti gli ospiti il cui nome inizia con la D
+      SELECT *
+      FROM ospiti
+      WHERE name LIKE 'D%'
+
+    • Calcola il totale degli ordini accepted
+	SELECTsum(price)
+      FROM pagamenti
+      WHERE status LIKE 'accepted'
+
+    • Qual è il prezzo massimo pagato?
+      SELECT max(price) FROM pagamenti  (qualsiasi status )
+                           SELECT max(price) FROM pagamenti WHERE status LIKE 'accepted'
+
+    • Seleziona gli ospiti riconosciuti con patente e nati nel 1975
+      SELECT * FROM ospiti
+      WHERE document_type
+      LIKE 'Driver License' AND  year(date_of_birth) = 1975
+
+    • Quanti paganti sono anche ospiti?
+      SELECT * FROM paganti
+      WHERE ospite_id IS NOT NULL
+
+
+    • Quanti posti letto ha l’hotel in totale?
+	SELECT sum(beds) FROM stanze
+
+
+Group by
+    • Conta gli ospiti raggruppandoli per anno di nascita
+      SELECT count(id), date_of_birth
+      FROM ospiti
+      GROUP BY date_of_birth
+      ORDER BY date_of_birth DESC
+      
+    • Somma i prezzi dei pagamenti raggruppandoli per status
+      SELECT sum(price), count(*), status
+      FROM pagamenti
+      GROUP BY status
+      
+    • Conta quante volte è stata prenotata ogni stanza
+      SELECT stanza_id, count(*)
+      FROM prenotazioni
+      GROUP BY stanza_id ORDER BY count(*) DESC
+      
+    • Fai una analisi per vedere se ci sono ore in cui le prenotazioni sono più frequenti
+      SELECT COUNT( HOUR(created_at) ) AS 'how',
+      HOUR(created_at) AS 'at_what_time'
+      FROM prenotazioni
+      GROUP BY HOUR(created_at)
+      ORDER BY `how` DESC
+      
+    • Quante prenotazioni ha fatto l’ospite che ha fatto più prenotazioni?
+      SELECT ospite_id, count(*) as prenotazioni_fatte
+      FROM prenotazioni_has_ospiti
+      GROUP BY ospite_id
+      ORDER BY count(*)DESC
