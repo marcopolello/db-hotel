@@ -14,12 +14,19 @@ Join
        JOIN ospiti on prenotazioni_has_ospiti.ospite_id = ospiti.id
       
     • Stampare Nome, Cognome, Prezzo e Pagante per tutte le prenotazioni fatte a Maggio 2018
-      SELECT pagamenti.id, pagamenti.price, pagamenti.status,
-              paganti.name, paganti.lastname, prenotazioni.*
-      FROM pagamenti 
-         JOIN paganti ON pagamenti.id = pagamenti.id
-          JOIN prenotazioni ON pagamenti.prenotazione_id = 	prenotazioni.id
-        WHERE month(prenotazioni.created_at) = 05
+      SELECT prenotazioni.created_at, 
+       pagamenti.status, pagamenti.price, 
+       paganti.name, paganti.lastname,
+       ospiti.name, ospiti.lastname
+	FROM prenotazioni
+    		JOIN pagamenti
+        	ON prenotazioni.id = pagamenti.prenotazione_id
+    		JOIN paganti
+        	ON pagamenti.pagante_id = paganti.id
+    		LEFT JOIN ospiti
+        	ON paganti.ospite_id = ospiti.id
+	WHERE MONTH(prenotazioni.created_at) = 5 
+    		AND YEAR(prenotazioni.created_at) = 2018
       
     • Fai la somma di tutti i prezzi delle prenotazioni per le stanze del primo piano
 	SELECT sum(pagamenti.price)
